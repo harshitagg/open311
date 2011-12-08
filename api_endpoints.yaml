@@ -1,12 +1,12 @@
-changeset: 2011-12-12 12:00
-contact: William Shakespeare
-key_service: api_key
+changeset: 2011-02-03 14:18
+contact: You can email or call for assistance api@mycity.org +1 (555) 555-5555
+key_service: You can request a key here http://api.mycity.gov/api_key/request
 endpoints:
   endpoint:
-    specification: FooBar
-    url: FooBar URL
-    changeset: 2011-12-12 14:00
-    type: test
+    specification: http://wiki.open311.org/GeoReport_v2
+    url: http://open311.mycity.gov/v2
+    changeset: 2010-11-23 09:01
+    type: production
     formats:
       - format: text/xml
       - format: text/json
