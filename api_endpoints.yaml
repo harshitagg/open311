@@ -1,0 +1,12 @@
+changeset: 2011-12-12 12:00
+contact: William Shakespeare
+key_service: api_key
+endpoints:
+  endpoint:
+    specification: FooBar
+    url: FooBar URL
+    changeset: 2011-12-12 14:00
+    type: test
+    formats:
+      - format: text/xml
+      - format: text/json

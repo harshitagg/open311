@@ -1,0 +1,1 @@
+SERVICE_DISCOVERY_FILE='api_endpoints.yaml'

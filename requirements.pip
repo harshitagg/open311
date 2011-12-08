@@ -1,0 +1,5 @@
+ipython
+pyyaml
+lxml
+flask
+tornado==2.1.1
