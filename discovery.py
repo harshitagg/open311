@@ -16,7 +16,7 @@ class ServiceDiscovery(object):
 
 def xml_formatter():
     contents = _contents_from_yaml()
-    return etree.tostring(dict_to_lxml(etree.Element('discovery'), contents), encoding='utf-8', xml_declaration=True, pretty_print=True)
+    return etree.tostring(dict_to_lxml(etree.Element('discovery'), contents), encoding='utf-8', xml_declaration=True)
 
 def json_formatter():
     return json.dumps(_contents_from_yaml())
