@@ -1,11 +1,10 @@
 from flask import Flask
-from discovery import ServiceDiscovery
+
+from flask.ext import SQLAlchemy
+from api.discovery import ServiceDiscovery
 
 app = Flask(__name__)
 
-@app.route('/discovery')
-def default_discovery():
-    return "Index to discovery"
 
 @app.route("/discovery.<format>")
 def discovery(format='xml'):
