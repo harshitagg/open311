@@ -2,8 +2,17 @@ from flask import Flask
 
 from flask.ext import SQLAlchemy
 from api.discovery import ServiceDiscovery
+from services import ServiceList, ServiceDefinition
 
 app = Flask(__name__)
+
+@app.route("/services.<format>")
+def service_list(format='xml'):
+    return ServiceList(format).get()
+
+@app.route("/services/<service_code>.<format>")
+def service_definition(service_code, format='xml'):
+    return ServiceDefinition(service_code, format).get()
 
 
 @app.route("/discovery.<format>")
