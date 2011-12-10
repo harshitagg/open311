@@ -1,6 +1,6 @@
 from lxml import etree
 import unittest
-from discovery import dict_to_lxml
+from utils import dict_to_lxml
 
 
 class UtilTests(unittest.TestCase):
