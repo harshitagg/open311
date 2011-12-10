@@ -1,6 +1,8 @@
 
+REQUIREMENTS
+======================
 INSTALL
-=======================
+======================
 
 1. Clone the repository somewhere on your disk
 2. Create a virtualenv, virtualenv --nos-site-packages ve311

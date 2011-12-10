@@ -1,6 +1,5 @@
 from flask import Flask
 
-from flask.ext import SQLAlchemy
 from api.discovery import ServiceDiscovery
 from services import ServiceList, ServiceDefinition
 
