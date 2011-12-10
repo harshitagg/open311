@@ -1,7 +1,7 @@
 from flask import Flask
 
 from api.discovery import ServiceDiscovery
-from services import ServiceList, ServiceDefinition
+from api.services import ServiceList, ServiceDefinition
 
 app = Flask(__name__)
 
