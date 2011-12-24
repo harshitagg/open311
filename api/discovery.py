@@ -9,10 +9,14 @@ from settings import SERVICE_DISCOVERY_FILE
 class ServiceDiscovery(object):
     
     def __init__(self, format='xml'):
-        self.format = _xml_formatter if format == 'xml' else _json_formatter
+        self.formatter = _xml_formatter if format == 'xml' else _json_formatter
+        self.format = format
 
     def get(self):
-        return self.format()
+        return self.formatter()
+
+    def content_type(self):
+        return "text/xml; charset=utf-8" if self.format == 'xml' else "application/json; charset=utf-8"
 
 def _xml_formatter():
     contents = _contents_from_yaml()
