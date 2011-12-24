@@ -1,4 +1,5 @@
 *.pyc
 *.logs
 .idea
+ve311/
 
