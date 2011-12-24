@@ -16,3 +16,6 @@ def dict_to_lxml(root, dictionary):
 
     root.append(element)
     return dict_to_lxml(root, dictionary)
+
+def content_type_for(format):
+    return "text/xml; charset=utf-8" if format == 'xml' else "application/json; charset=utf-8"

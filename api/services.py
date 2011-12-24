@@ -1,3 +1,4 @@
+from utils import content_type_for
 
 class ServiceList(object):
 
@@ -5,7 +6,10 @@ class ServiceList(object):
         self.format = format
 
     def get(self):
-        pass
+        return ""
+
+    def content_type(self):
+        return content_type_for(self.format)
 
 class ServiceDefinition(object):
 

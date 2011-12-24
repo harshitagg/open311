@@ -5,6 +5,7 @@ from lxml import etree
 
 from utils import dict_to_lxml
 from settings import SERVICE_DISCOVERY_FILE
+from utils import content_type_for
 
 class ServiceDiscovery(object):
     
@@ -16,7 +17,7 @@ class ServiceDiscovery(object):
         return self.formatter()
 
     def content_type(self):
-        return "text/xml; charset=utf-8" if self.format == 'xml' else "application/json; charset=utf-8"
+        return content_type_for(self.format)
 
 def _xml_formatter():
     contents = _contents_from_yaml()

@@ -7,7 +7,8 @@ app = Flask(__name__)
 
 @app.route("/services.<format>")
 def service_list(format='xml'):
-    return ServiceList(format).get()
+    service_list = ServiceList(format.lower())
+    return response_from(service_list.get(), service_list.content_type())
 
 @app.route("/services/<service_code>.<format>")
 def service_definition(service_code, format='xml'):
@@ -18,8 +19,12 @@ def discovery(format='xml'):
     if format.lower() not in ['xml', 'json']:
         return "Un-Supported format"       #FIXME This needs to be implemented as per-spec. I am not sure what the spec is at the moment.
     discovery  = ServiceDiscovery(format.lower())
-    response = app.make_response(discovery.get())
-    response.headers['Content-Type'] = discovery.content_type()
+    return response_from(discovery.get(), discovery.content_type())
+
+
+def response_from(body, content_type):
+    response = app.make_response(body)
+    response.headers['Content-Type'] = content_type
     return response
 
 if __name__ == "__main__":
