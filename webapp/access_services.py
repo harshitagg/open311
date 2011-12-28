@@ -6,7 +6,7 @@ from service_schema import *
 class access_service:
 
 	def __init__(self):
-		engine = create_engine(DATABASE_URI, echo=True)
+		engine = create_engine('sqlite:///sample.db', echo=True)
 		self.Session = sessionmaker()
 		self.Session.configure(bind=engine)
 
@@ -28,4 +28,3 @@ class access_service:
 				keyword.append(Keywords.keywords)
 			services.append(dict(service_code=row.code,service_name=row.name, description=row.descn,metadata=row.serv_metadata,type=row.serv_type,keywords=keywords,group=row.group))
 		return services
-

@@ -2,17 +2,19 @@ from sqlalchemy import *
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship, backref
 #from settings import DATABASE_URI
+
 Base = declarative_base()
+
 class Service(Base):
         __tablename__='service'
 
-        code= Column(Integer, primary_key=True)
-        name= Column(String, nullable=False)
-        descn= Column(String, nullable=False)
-        serv_metadata= Column(Boolean, nullable=False)
-        serv_type=Column(String, nullable=False)
-        keywords= relationship("Keywords")
-        group=Column(String, nullable=False)
+        code = Column(Integer, primary_key=True)
+        name = Column(String, nullable=False)
+        descn = Column(String, nullable=False)
+        serv_metadata = Column(Boolean, nullable=False)
+        serv_type = Column(String, nullable=False)
+        keywords = relationship("Keywords")
+        group = Column(String, nullable=False)
 
         #CheckConstraint('serv_type='realtime'||serv_type='batch'||serv_type='blackbox'',name="type_check")
 
@@ -36,3 +38,6 @@ class Keywords(Base):
 	def __init__(self, code, keywords):
 		self.code = code
 		self.keywords = keywords
+
+engine = create_engine('sqlite:///sample.db', echo=True)
+Base.metadata.create_all(engine)
