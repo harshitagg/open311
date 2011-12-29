@@ -1,7 +1,7 @@
 import json
 from utils import content_type_for
 from webapp.access_services import AccessService
-from utils import dict_to_lxml
+from utils import XML
 from lxml import etree
 
 class ServiceList(object):
@@ -17,12 +17,12 @@ class ServiceList(object):
         return content_type_for(self.format)
 
 def _xml_formatter():
-	root = etree.Element('services')
+	root = XML('services')
 	access_service_obj = AccessService()
 	service_list = access_service_obj.getServiceList()
 	for service in service_list:
-		root.append(dict_to_lxml(etree.Element('service'),service))
-	return etree.tostring(root, encoding='utf-8',xml_declaration=True)
+		root.append(XML('service').append_dict(service))
+	return repr(root)
 
 def _json_formatter():
 	content = []

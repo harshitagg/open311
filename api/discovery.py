@@ -3,7 +3,7 @@ import json
 import yaml
 from lxml import etree
 
-from utils import dict_to_lxml
+from utils import XML
 from settings import SERVICE_DISCOVERY_FILE
 from utils import content_type_for
 
@@ -21,8 +21,8 @@ class ServiceDiscovery(object):
 
 def _xml_formatter():
     contents = _contents_from_yaml()
-    print contents
-    return etree.tostring(dict_to_lxml(etree.Element('discovery'), contents), encoding='utf-8', xml_declaration=True)
+    element = XML('discovery')
+    return repr(element.append_dict(contents))
 
 def _json_formatter():
     return json.dumps(_contents_from_yaml())
