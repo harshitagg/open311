@@ -21,6 +21,7 @@ class ServiceDiscovery(object):
 
 def _xml_formatter():
     contents = _contents_from_yaml()
+    print contents
     return etree.tostring(dict_to_lxml(etree.Element('discovery'), contents), encoding='utf-8', xml_declaration=True)
 
 def _json_formatter():
