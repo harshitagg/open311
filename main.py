@@ -12,7 +12,8 @@ def service_list(format='xml'):
 
 @app.route("/services/<service_code>.<format>")
 def service_definition(service_code, format='xml'):
-    return ServiceDefinition(service_code, format).get()
+    service_definition = ServiceDefinition(service_code, format.lower())
+    return response_from(service_definition.get(), service_definition.content_type())
 
 @app.route("/discovery.<format>")
 def discovery(format='xml'):

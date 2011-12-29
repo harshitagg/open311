@@ -7,8 +7,8 @@ from lxml import etree
 class ServiceList(object):
 
     def __init__(self, format):
-	    self.formatter = _xml_formatter if format == 'xml' else _json_formatter
-	    self.format = format
+	self.formatter = _xml_formatter if format == 'xml' else _json_formatter
+	self.format = format
 
     def get(self):
 	return self.formatter()
@@ -39,7 +39,10 @@ class ServiceDefinition(object):
         self.format = format
         
     def get(self):
-        pass
+        return ""
+
+    def content_type(self):
+	return content_type_for(self.format)
 
 class ServiceRequest(object):
 
