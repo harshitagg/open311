@@ -1,13 +1,13 @@
 import json
 from utils import content_type_for
-from webapp.access_services import AccessService
+from api.access_services import AccessService
 from utils import XML
 from lxml import etree
 
 class ServiceList(object):
 
     def __init__(self, format):
-	self.formatter = _xml_formatter if format == 'xml' else _json_formatter
+	self.formatter = _xml_formatter_list if format == 'xml' else _json_formatter_list
 	self.format = format
 
     def get(self):
@@ -16,7 +16,7 @@ class ServiceList(object):
     def content_type(self):
         return content_type_for(self.format)
 
-def _xml_formatter():
+def _xml_formatter_list():
 	root = XML('services')
 	access_service_obj = AccessService()
 	service_list = access_service_obj.getServiceList()
@@ -24,7 +24,7 @@ def _xml_formatter():
 		root.append(XML('service').append_dict(service))
 	return repr(root)
 
-def _json_formatter():
+def _json_formatter_list():
 	content = []
 	access_service_obj = AccessService()
 	service_list = access_service_obj.getServiceList()
@@ -37,12 +37,26 @@ class ServiceDefinition(object):
     def __init__(self, service_code, format):
         self.service_code = service_code
         self.format = format
-        
+ 	self.formatter = _xml_formatter_def if format == 'xml' else _json_formatter_def
+       
     def get(self):
-        return ""
+        return self.formatter(self.service_code)
 
     def content_type(self):
 	return content_type_for(self.format)
+
+def _xml_formatter_def(service_code):
+	root = XML('service_definition')
+	access_service_obj = AccessService()
+	service_definition = access_service_obj.getServiceDefinition(service_code)
+	root.append_dict(service_definition)
+	return repr(root)
+
+def _json_formatter_def(service_code):
+	content = []
+	access_service_obj = AccessService()
+	service_definition = access_service_obj.getServiceDefinition(service_code)
+	return json.dumps(service_definition)
 
 class ServiceRequest(object):
 
