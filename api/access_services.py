@@ -5,8 +5,8 @@ from service_schema import *
 
 class AccessService:
 
-	def __init__(self):
-		engine = create_engine('sqlite:///sample.db', echo=True)
+	def __init__(self, engine_uri):
+		engine = create_engine(engine_uri, echo=True)
 		self.Session = sessionmaker()
 		self.Session.configure(bind=engine)
 
@@ -48,5 +48,5 @@ class AccessService:
 		for row in session.query(Values.key,Values.name).filter(service_code == Values.service_code):
 			value_list.append({'value':{'key':str(row.key), 'name':str(row.name)}})
 		for attr in session.query(Attributes.variable, Attributes.code, Attributes.datatype, Attributes.required, Attributes.datatype_description, Attributes.order, Attributes.description).filter(service_code == Attributes.service_code):
-			return ({'service_code':service_code,'attributes':{'attribute':{'variable':str(attr.variable), 'code':str(attr.code), 'datatype':str(attr.datatype), 'required':str(attr.required), 'datatype_description':str(attr.datatype_description), 'order':str(attr.order), 'description':str(attr.description), 'values':value_list}}})
+			return ({'service_code':str(service_code),'attributes':{'attribute':{'variable':str(attr.variable), 'code':str(attr.code), 'datatype':str(attr.datatype), 'required':str(attr.required), 'datatype_description':str(attr.datatype_description), 'order':str(attr.order), 'description':str(attr.description), 'values':value_list}}})
 		return []

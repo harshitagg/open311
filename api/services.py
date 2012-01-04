@@ -4,6 +4,8 @@ from api.access_services import AccessService
 from utils import XML
 from lxml import etree
 
+engine_config = 'sqlite:///sample.db'
+
 class ServiceList(object):
 
     def __init__(self, format):
@@ -18,7 +20,7 @@ class ServiceList(object):
 
 def _xml_formatter_list():
 	root = XML('services')
-	access_service_obj = AccessService()
+	access_service_obj = AccessService(engine_config)
 	service_list = access_service_obj.getServiceList()
 	for service in service_list:
 		root.append(XML('service').append_dict(service))
@@ -26,7 +28,7 @@ def _xml_formatter_list():
 
 def _json_formatter_list():
 	content = []
-	access_service_obj = AccessService()
+	access_service_obj = AccessService(engine_config)
 	service_list = access_service_obj.getServiceList()
 	for service in service_list:
 		content.append(service)
@@ -47,14 +49,14 @@ class ServiceDefinition(object):
 
 def _xml_formatter_def(service_code):
 	root = XML('service_definition')
-	access_service_obj = AccessService()
+	access_service_obj = AccessService(engine_config)
 	service_definition = access_service_obj.getServiceDefinition(service_code)
 	root.append_dict(service_definition)
 	return repr(root)
 
 def _json_formatter_def(service_code):
 	content = []
-	access_service_obj = AccessService()
+	access_service_obj = AccessService(engine_config)
 	service_definition = access_service_obj.getServiceDefinition(service_code)
 	return json.dumps(service_definition)
 
