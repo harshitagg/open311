@@ -2,7 +2,6 @@ import unittest
 import main
 import sqlite3
 from api.access_services import AccessService
-
 engine_config = 'sqlite:///test.db'
 db_path = 'test.db'
 
@@ -10,17 +9,16 @@ class TestAccessService(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        pass
+	cls.access_service_obj  = AccessService(engine_config)
 
     @classmethod
     def tearDownClass(cls):
-        pass
+        cls.access_service_obj.drop_db()
 
     def setUp(self):
-	main.app.config['TESTING'] = True
+        main.app.config['TESTING'] = True
 	self.app = main.app.test_client()
 	_db_cleanup()
-	self.access_service_obj  = AccessService(engine_config)
 	self.conn = sqlite3.connect(db_path)
 	self.c = self.conn.cursor()
 

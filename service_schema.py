@@ -78,3 +78,6 @@ class DbBase():
 
 	def create(self):
 		Base.metadata.create_all(self.engine)
+
+	def drop(self):
+		Base.metadata.drop_all(self.engine)

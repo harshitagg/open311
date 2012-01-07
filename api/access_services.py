@@ -8,10 +8,13 @@ class AccessService:
 
 	def __init__(self, engine_uri):
 		engine = create_engine(engine_uri, echo=True)
-		db_base = DbBase(engine)
-		db_base.create()
+		self.db_base = DbBase(engine)
+		self.db_base.create()
 		self.Session = sessionmaker()
 		self.Session.configure(bind=engine)
+
+	def drop_db(self):
+		self.db_base.drop()
 
 	def add_service(self, code, name, descn, serv_metadata, serv_type, keywords, group):
 		session = self.Session()

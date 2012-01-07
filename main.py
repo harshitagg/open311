@@ -1,9 +1,14 @@
-from flask import Flask
+from flask import Flask, request
 
 from api.discovery import ServiceDiscovery
 from api.services import ServiceList, ServiceDefinition
+from webapp.add_service import show_form
+
+#configuration
+SECRET_KEY = 'development'
 
 app = Flask(__name__)
+app.config.from_object(__name__)
 
 @app.route("/services.<format>")
 def service_list(format='xml'):
@@ -22,6 +27,9 @@ def discovery(format='xml'):
     discovery  = ServiceDiscovery(format.lower())
     return response_from(discovery.get(), discovery.content_type())
 
+@app.route("/add_service", methods = ['POST', 'GET'])
+def show_service_form():
+    return show_form()
 
 def response_from(body, content_type):
     response = app.make_response(body)
@@ -29,4 +37,4 @@ def response_from(body, content_type):
     return response
 
 if __name__ == "__main__":
-    app.run()
+    app.run(debug=True)
