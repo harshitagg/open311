@@ -72,7 +72,9 @@ class Attributes(Base):
 		self.description = description
 		self.service_code = service_code
 		
+class DbBase():
+	def __init__(self, engine):
+		self.engine = engine
 
-engine = create_engine('sqlite:///sample.db', echo=True)
-#Base.metadata.drop_all(engine)
-Base.metadata.create_all(engine)
+	def create(self):
+		Base.metadata.create_all(self.engine)

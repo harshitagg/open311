@@ -3,10 +3,13 @@ from sqlalchemy.orm import sessionmaker
 #from settings import DATABASE_URI
 from service_schema import *
 
+
 class AccessService:
 
 	def __init__(self, engine_uri):
 		engine = create_engine(engine_uri, echo=True)
+		db_base = DbBase(engine)
+		db_base.create()
 		self.Session = sessionmaker()
 		self.Session.configure(bind=engine)
 
