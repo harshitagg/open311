@@ -30,7 +30,7 @@ class TestAccessService(unittest.TestCase):
     def testAddService(self):
 	self.access_service_obj.add_service(0, "name", "description", True, "service type", ["keyword1","keyword2"], "group")
 	self.c.execute("select * from service where code=0")
-	self.assertEquals(self.c.fetchone(),(0,"name", "description", 1, "service type", "group"));
+	self.assertEquals(self.c.fetchone(),(1, 0, "name", "description", 1, "service type", "group"));
 	self.c.execute("select keyword from keywords where service_code=0")
 	self.assertEquals(self.c.fetchall(),[("keyword1", ),("keyword2", )])
 
@@ -42,7 +42,7 @@ class TestAccessService(unittest.TestCase):
         self.access_service_obj.add_service(0, "name", "description", True, "service type", ["keyword1","keyword2"], "group")
         self.access_service_obj.add_service_attribute(True, "code", "datatype", True, "datatype_description", 1, "description", 0)
         self.c.execute("select * from attribute where service_code=0")
-        self.assertEquals(self.c.fetchone(),(1,"code", "datatype", 1, "datatype_description", 1, "description", 0));
+        self.assertEquals(self.c.fetchone(),(1, 1, "code", "datatype", 1, "datatype_description", 1, "description", 0));
 	
     def test_add_service_value(self):
         self.access_service_obj.add_service(0, "name", "description", True, "service type", ["keyword1","keyword2"], "group")

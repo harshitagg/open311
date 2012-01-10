@@ -1,0 +1,27 @@
+{% extends "layout.html" %}
+{% block body %}
+	<form action="{{ url_for('show_service_form') }}" method=post class=add-entry>
+		<table>
+			<tr><td>Code:</td>
+			<td><input type=text size=30 name=code></td></tr>
+			<tr><td>Name:</td>
+			<td><input type=text size=30 name=name></td></tr>
+			<tr><td>Description:</td>
+			<td><textarea name=description row=5 column=40></textarea></td></tr>
+			<tr><td>Metadata:</td>
+			<td><input type=radio value=True name=metadata>True  <input type=radio value=False name=metadata>False</td></tr>
+			<tr><td>Type:</td>
+			<td><select name=type>
+				<option value=realtime>Realtime</option>
+				<option value=batch>Batch</option>
+				<option value=blackbox>Blackbox</option>
+			    </select></td></tr>
+			<tr><td>Keywords:</br>(Enter in a comma</br>seperated format)</td>
+			<td><input type=text size=30 name=keywords></td></tr>
+			<tr><td>Group:</td>
+			  <td><input type=text size=30 name=group></td>
+			</tr>
+			<tr><td></td><td><input type=submit value=Submit></td></tr>
+		</table>
+	</form>
+{% endblock %}
