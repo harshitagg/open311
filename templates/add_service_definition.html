@@ -2,7 +2,7 @@
 {% block script %}
 <script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.4.4.js"></script>
 <script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/jquery.templates/beta1/jquery.tmpl.js"></script>
-<script src="add_service_definition.js"></script>
+<script type="text/javascript" src="static/js/add_service_definition.js"></script>
 {% endblock %}
 {% block body %}
 <form action="{{ url_for('show_service_def_form') }}" method=post class=add-entry>
@@ -13,58 +13,65 @@
     </tr>
   </table>
   <div id="attributeContainer"></div>
-  <script id="valueTemplate" type="text/x-jQuery-tmpl">
-    <div>
-      <tr>
-	<td>Key:</td>
-	<td><input type=text size=10 name=key></td>
-	<td>Name:</td>
-	<td><input type=text size=10 name=name></td>
-      </tr>
-    </div>
-  </script>
-  <script id="attributeTemplate" type="text/x-jQuery-tmpl">
-    <div>
-      <table>
-	<tr>
-	  <td>Order:</td>
-	  <td>${order}</td>
-	</tr>
-	<tr>
-	  <td>Variable:</td>
-	  <td><input type=radio value=True name=variable>True <input type=radio value=False name=variable>False</td>
-	</tr>
-	<tr>
-	  <td>Attribute Code:</td>
-	  <td><input type=text size=30 name=attr_code></td>
-	<tr>
-	<tr><td>Data type:</td>
-	  <td>
-	    <select name=datatype>
-	      <option value=sring>string</option>
-	      <option value=number>number</option>
-	      <option value=datetime>datetime</option>
-	      <option value=text>text</option>
-	      <option value=singlevaluelist>singlevaluelist</option>
-	      <option value=multivaluelist>multivaluelist</option>
-	    </select>
-	  </td>
-	</tr>
-	<tr>
-	  <td>Description:</td>
-	  <td><textarea name=description row=5 column=40></textarea></td>
-	</tr>
-	<tr>
-	  <td>Required:</td>
-	  <td><input type=radio value=True name=required>True  <input type=radio value=False name=required>False</td>
-	</tr>
-	<tr>
-	  <td>Values:</td>
-	  <td><table><div id="valueContainer"></div></table><div><input id="addValueButton" type=button value="Add Value"/></div>
-	</tr>
-      </table>
-    </div>
-  </script>
-  <div id="addAttributeButton"><input type=button value="Add Attribute"/></div>
+  <div><input id="addAttributeButton" type=button value="Add Attribute"/></div>
 </form>
+<script id="valueTemplate" type="text/x-jQuery-tmpl">
+    <div>
+        <tr>
+            <td>Key:</td>
+            <td><input type=text size=10 name=key></td>
+            <td>Name:</td>
+            <td><input type=text size=10 name=name></td>
+        </tr>
+    </div>
+</script>
+<script id="attributeTemplate" type="text/x-jQuery-tmpl">
+    <div>
+        <table>
+            <tr>
+                <td>Order:</td>
+                <td>${order}</td>
+            </tr>
+            <tr>
+                <td>Variable:</td>
+                <td><input type=radio value=True name=variable>True <input type=radio value=False name=variable>False
+                </td>
+            </tr>
+            <tr>
+                <td>Attribute Code:</td>
+                <td><input type=text size=30 name=attr_code></td>
+            <tr>
+            <tr>
+                <td>Data type:</td>
+                <td>
+                    <select name=datatype>
+                        <option value=sring>string</option>
+                        <option value=number>number</option>
+                        <option value=datetime>datetime</option>
+                        <option value=text>text</option>
+                        <option value=singlevaluelist>singlevaluelist</option>
+                        <option value=multivaluelist>multivaluelist</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>Description:</td>
+                <td><textarea name=description row=5 column=40></textarea></td>
+            </tr>
+            <tr>
+                <td>Required:</td>
+                <td><input type=radio value=True name=required>True <input type=radio value=False name=required>False
+                </td>
+            </tr>
+            <tr>
+                <td>Values:</td>
+                <td>
+                    <table>
+                        <div class="valueContainer"></div>
+                    </table>
+                    <div><input class="addValueButton" type=button value="Add Value"/></div>
+            </tr>
+        </table>
+    </div>
+</script>
 {% endblock %}
