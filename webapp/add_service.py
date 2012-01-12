@@ -4,7 +4,7 @@ from api.access_services import AccessService
 #app = Flask(__name__)
 engine_config = 'sqlite:///sample.db'
 
-def show_form():
+def show_add_serv_form():
     if request.method=='POST':
 	keywords = []
 	access_service_obj = AccessService(engine_config)
@@ -15,6 +15,12 @@ def show_form():
 	return redirect('http://127.0.0.1:5000/add_service')
     else:
 	return render_template('add_service.html')
+
+def show_add_serv_def_form():
+    if request.method=='POST':
+        return render_template('add_service_definition.html')
+    else:
+        return render_template('add_service_definition.html')
 
 def _str2bool(value):
     return value.lower() in ("true")

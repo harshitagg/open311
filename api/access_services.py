@@ -2,7 +2,7 @@
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from service_schema import *
+from service_schema import Service, Keywords, Values, Attributes, DbBase
 
 class AccessService(object):
     def __init__(self, engine_uri):

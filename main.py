@@ -2,7 +2,7 @@ from flask import Flask, request
 
 from api.discovery import ServiceDiscovery
 from api.services import ServiceList, ServiceDefinition
-from webapp.add_service import show_form
+from webapp.add_service import show_add_serv_form, show_add_serv_def_form
 
 #configuration
 SECRET_KEY = 'development'
@@ -29,7 +29,11 @@ def discovery(format='xml'):
 
 @app.route("/add_service", methods = ['POST', 'GET'])
 def show_service_form():
-    return show_form()
+    return show_add_serv_form()
+
+@app.route("/add_service_definition", methods = ['POST', 'GET'])
+def show_service_def_form():
+    return show_add_serv_def_form()
 
 def response_from(body, content_type):
     response = app.make_response(body)

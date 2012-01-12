@@ -1,8 +1,8 @@
 # vim: ai ts=4 sts=4 et sw= encoding=utf-8
-from sqlalchemy import *
+
+from sqlalchemy import Column, String, Integer, Boolean, ForeignKey
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship, backref
-#from settings import DATABASE_URI
 
 Base = declarative_base()
 
@@ -24,7 +24,6 @@ class Keywords(Base):
         id = Column(Integer, primary_key=True)
 	service_code = Column(Integer, ForeignKey('service.code'))
 	keyword = Column(String,nullable=False)
-
 
 
 class Values(Base):
