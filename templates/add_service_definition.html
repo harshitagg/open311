@@ -5,7 +5,7 @@
 <script type="text/javascript" src="static/js/add_service_definition.js"></script>
 {% endblock %}
 {% block body %}
-<form action="{{ url_for('show_service_def_form') }}" method=post class=add-entry>
+<form action="{{ url_for('show_service_def_form') }}" method="post" class=add-entry>
   <table>
     <tr>
       <td>Code:</td>
@@ -14,37 +14,38 @@
   </table>
   <div id="attributeContainer"></div>
   <div><input id="addAttributeButton" type=button value="Add Attribute"/></div>
+  <input type="submit" name="submit" value="Submit">
 </form>
 <script id="valueTemplate" type="text/x-jQuery-tmpl">
-    <div>
+    <div id="values">
         <tr>
             <td>Key:</td>
-            <td><input type=text size=10 name=key></td>
+            <td><input type=text size=10 name=key id="key"></td>
             <td>Name:</td>
-            <td><input type=text size=10 name=name></td>
+            <td><input type=text size=10 name=name id="name"></td>
         </tr>
     </div>
 </script>
 <script id="attributeTemplate" type="text/x-jQuery-tmpl">
-    <div>
+    <div id="attribute">
         <table>
             <tr>
                 <td>Order:</td>
-                <td>${order}</td>
+                <td>${order}</td><input type="hidden" name="order${order}" id="order${order}" value=${order}>
             </tr>
             <tr>
                 <td>Variable:</td>
-                <td><input type=radio value=True name=variable>True <input type=radio value=False name=variable>False
+                <td><input type=radio value=True name="variable${order}" id="variable${order}" >True <input type=radio value=False name="variable${order}" id="variable${order}">False
                 </td>
             </tr>
             <tr>
                 <td>Attribute Code:</td>
-                <td><input type=text size=30 name=attr_code></td>
+                <td><input type=text size=30 name="attr_code${order}" id="attr_code${order}"></td>
             <tr>
             <tr>
                 <td>Data type:</td>
                 <td>
-                    <select name=datatype>
+                    <select name="datatype${order}" id="datatype${order}">
                         <option value=sring>string</option>
                         <option value=number>number</option>
                         <option value=datetime>datetime</option>
@@ -56,11 +57,11 @@
             </tr>
             <tr>
                 <td>Description:</td>
-                <td><textarea name=description row=5 column=40></textarea></td>
+                <td><textarea name="description${order}" id="description${order}" row=5 column=40></textarea></td>
             </tr>
             <tr>
                 <td>Required:</td>
-                <td><input type=radio value=True name=required>True <input type=radio value=False name=required>False
+                <td><input type=radio value=True name="required${order}" id="required${order}">True <input type=radio value=False name="required${order}" id="required${order}">False
                 </td>
             </tr>
             <tr>

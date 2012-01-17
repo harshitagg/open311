@@ -12,12 +12,13 @@ def show_add_serv_form():
         metadata = str(request.form['metadata'])
         access_service_obj.add_service(request.form['code'], request.form['name'], request.form['description'], _str2bool(metadata), request.form['type'], keywords, request.form['group'])
 	flash('Submission Successful')
-	return redirect('http://127.0.0.1:5000/add_service')
+	return redirect('http://127.0.0.1:5000/add_service') #should be replaced with url_for
     else:
 	return render_template('add_service.html')
 
 def show_add_serv_def_form():
     if request.method=='POST':
+        data = request.form['data']
         return render_template('add_service_definition.html')
     else:
         return render_template('add_service_definition.html')
