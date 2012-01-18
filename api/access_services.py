@@ -38,9 +38,9 @@ class AccessService(object):
 
     def getServiceList(self):
 	session = self.Session()
-	keyword_list = []
 	service_list = []
 	for row in session.query(Service.code, Service.name, Service.descn, Service.serv_metadata, Service.serv_type, Service.group).all():
+            keyword_list = []
             for row_ in session.query(Keywords.keyword).filter(Keywords.service_code==row.code):
                 keyword_list.append(row_.keyword)
             keyword_string = ','.join(keyword_list) 
