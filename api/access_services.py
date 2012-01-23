@@ -2,7 +2,8 @@
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from service_schema import Service, Keywords, Values, Attributes, DbBase
+from service_schema import Service, Keywords, Values, Attributes, DbBase, Requests, RequestsId, RequestsToken, RequestAttribue
+from flask import abort
 
 class AccessService(object):
     def __init__(self, engine_uri):
@@ -30,11 +31,35 @@ class AccessService(object):
 	session.add(new_attribute)
 	session.commit()
 
-    def add_service_value(self,service_code, key, name):
+    def add_service_value(self,service_code, key, name, attribute_code):
 	session = self.Session()
-	new_value = Values(service_code=service_code, key=key, name=name)
+	new_value = Values(service_code = service_code, key = key, name = name, attribute_code = attribute_code)
 	session.add(new_value)
 	session.commit()
+
+    def add_requests(self, *args, **kwargs):
+        session = self.Session()
+        new_request = Requests(lat = kwargs.pop('lat', None), long = kwargs.pop('long', None), address_string = kwargs.pop('address_string', None), address_id = kwargs.pop('address_id', None), email = kwargs.pop('email', None), device_id = kwargs.pop('device_id', None), account_id = kwargs.pop('account_id', None), first_name = kwargs.pop('first_name', None), last_name = kwargs.pop('last_name', None), phone = kwargs.pop('phone', None), media_url = kwargs.pop('media_url', None), status = kwargs.pop('status', None), status_notes = kwargs.pop('status_notes', None), service_code = kwargs.pop('service_code', None), description = kwargs.pop('description', None), agency_responsible = kwargs.pop('agency_responsible', None), service_notice = kwargs.pop('service_notice', None), requested_datetime = kwargs.pop('requested_datetime', None), updated_datetime = kwargs.pop('updated_datetime', None), expected_datetime = kwargs.pop('expected_datetime', None), zipcode = kwargs.pop('zipcode', None))
+        session.add(new_request)
+        session.commit()
+
+    def add_requests_id(self, requests_id):
+        session = self.Session()
+        new_request_id = RequestsId(requests_id = requests_id)
+        session.add(new_request_id)
+        session.commit()
+
+    def add_requests_token(self, requests_id):
+        session = self.Session()
+        new_request_token = RequestsToken(requests_id = requests_id)
+        session.add(new_request_token)
+        session.commit()
+
+    def add_requests_attribute(self, requests_id, attribute_code, value):
+        session = self.Session()
+        new_request_attribute = RequestAttribue(requests_id = requests_id, attribute_code = attribute_code, value = value)
+        session.add(new_request_attribute)
+        session.commit()
 
     def getServiceList(self):
 	session = self.Session()
@@ -55,3 +80,63 @@ class AccessService(object):
         for attr in session.query(Attributes.variable, Attributes.code, Attributes.datatype, Attributes.required, Attributes.datatype_description, Attributes.order, Attributes.description).filter(service_code == Attributes.service_code):
             return ({'service_code':str(service_code),'attributes':{'attribute':{'variable':str(attr.variable), 'code':str(attr.code), 'datatype':str(attr.datatype), 'required':str(attr.required), 'datatype_description':str(attr.datatype_description), 'order':str(attr.order), 'description':str(attr.description), 'values':value_list}}})
 	return []
+
+    def postServiceRequests(self, request_form):
+        print request_form
+        service_code = request_form['service_code']
+        print service_code
+        if(service_code is None):
+            abort(400)
+
+        session = self.Session()
+        serv_metadata = False
+        service_found = False
+        for row in session.query(Service.serv_type, Service.serv_metadata).filter(service_code == Service.code):
+            serv_type = row.serv_type
+            serv_metadata = row.serv_metadata
+            service_found = True
+        
+        if(not service_found):
+            abort(404)
+
+        if(serv_metadata):
+            attributes = request_form.getlist('attribute')
+            if(attributes is None):
+                abort(400)
+
+        self.add_requests(lat = request_form['lat'], long = request_form['long'], address_string = request_form['address_string'], address_id = request_form['address_id'], email = request_form['email'], device_id = request_form['device_id'], account_id = request_form['account_id'], first_name = request_form['first_name'], last_name = request_form['last_name'], phone = request_form['phone'], description = request_form['description'], media_url = request_form['media_url'], service_code = service_code, status = 'open')
+        
+        for row in session.query(Requests.id).filter(service_code == Requests.service_code):
+            id = row.id
+
+        if(serv_metadata):
+            for code, values in attributes:
+                for value in values:
+                    self.add_requests_attribute(requests_id = id, attribute_code = code, value = value)
+
+        if(serv_type.lower() == "realtime"):
+            self.add_requests_id(requests_id = id)
+            for row in session.query(RequestsId.service_request_id).filter(id == RequestsId.requests_id):
+                service_request_id = row.service_request_id
+            return ({'service_request_id':str(service_request_id), 'service_notice':'Sample service notice', 'account_id':str(request_form['account_id'])})
+
+        elif (serv_type.lower() == "batch"):
+            self.add_requests_token(requests_id = id)
+            for row in session.query(RequestsToken.token).filter(id == RequestsToken.requests_id):
+                token = row.token
+            return ({'token':str(token), 'service_notice':'Sample service notice', 'account_id':str(request_form['account_id'])})
+
+        else:
+            return ({'service_notice':'Sample service notice', 'account_id':request_form['account_id']})
+
+        def postServiceRequests(self, args):
+            service_request_id = args.getlist['service_request_id']
+            service_code = args.get['service_code']
+            start_date = args.get['start_date']
+            end_date = args.get['end_date']
+            status = args.get['status']
+
+            session = self.Session()
+            request_list = []
+            
+            for row in session.query(RequestsId.requests_id)

@@ -1,7 +1,7 @@
 from flask import Flask, request
 
 from api.discovery import ServiceDiscovery
-from api.services import ServiceList, ServiceDefinition
+from api.services import ServiceList, ServiceDefinition, ServiceRequests
 from webapp.add_service import show_add_serv_form, show_add_serv_def_form
 
 #configuration
@@ -26,6 +26,14 @@ def discovery(format='xml'):
         return "Un-Supported format"       #FIXME This needs to be implemented as per-spec. I am not sure what the spec is at the moment.
     discovery  = ServiceDiscovery(format.lower())
     return response_from(discovery.get(), discovery.content_type())
+
+@app.route("/requests.<format>", methods = ['POST', 'GET'])
+def service_requests(format='xml'):
+    service_requests = ServiceRequests(format.lower())
+    if request.method=='GET':
+        return response_from(service_requests.get(), service_requests.content_type())
+    else:
+        return response_from(service_requests.post(request.form), service_requests.content_type())
 
 @app.route("/add_service", methods = ['POST', 'GET'])
 def show_service_form():

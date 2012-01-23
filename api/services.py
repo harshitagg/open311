@@ -35,6 +35,7 @@ def _json_formatter_list():
         content.append(service)
     return json.dumps(content)
 
+
 class ServiceDefinition(object):
 
     def __init__(self, service_code, format):
@@ -56,18 +57,45 @@ def _xml_formatter_def(service_code):
     return repr(root)
 
 def _json_formatter_def(service_code):
-    content = []
     access_service_obj = AccessService(engine_config)
     service_definition = access_service_obj.getServiceDefinition(service_code)
     return json.dumps(service_definition)
 
-class ServiceRequest(object):
+
+class ServiceRequests(object):
+
+    def __init__(self, format):
+        self.format = format
+        self.formatter = _xml_formatter_req if format == 'xml' else _json_formatter_req
 
     def get(self):
-        pass
+        return " "
 
-    def post(self):
-        pass
+    def post(self, form):
+        return self.formatter(form = form)
+
+    def content_type(self):
+        return content_type_for(self.format)
+
+def _xml_formatter_req(*args, **kwargs):
+    root = XML('service_requests')
+    access_service_obj = AccessService(engine_config)
+    form = kwargs.pop('form')
+    if(form != None):
+        subroot = XML('request')
+        post_service_requests = access_service_obj.postServiceRequests(form)
+        subroot.append_dict(post_service_requests)
+        root.append(subroot)
+        return repr(root)
+
+def _json_formatter_req(*args, **kwargs):
+    content = []
+    access_service_obj = AccessService(engine_config)
+    form = kwargs.pop('form')
+    if(form != None):
+        post_service_requests = access_service_obj.postServiceRequests(form)
+        content.append(post_service_requests)
+        return json.dumps(content)
 
 class MultipleServiceRequest(object):
 
