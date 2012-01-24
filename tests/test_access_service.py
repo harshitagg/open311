@@ -103,6 +103,13 @@ class TestAccessService(unittest.TestCase):
         response = self.access_service_obj.postServiceRequests(form_data)
         self.assertEquals({'service_notice':'Sample service notice', 'account_id':'account_id'}, response)
 
+    def test_get_service_requests(self):
+        self.access_service_obj.add_service(0, "name", "description", False, "", ["keyword1","keyword2"], "group")
+        date = datetime.utcnow()
+        self.access_service_obj.add_requests(lat = 0.1, long = 0.1, address_string =  "address_string", address_id  = 1, email = "email", device_id = "device_id", account_id = "account_id", first_name = "first_name", last_name = "last_name", phone = 1234567890, description = "description", media_url = "media_url", service_code = 0, status = "open", status_notes = "status_notes", agency_responsible = "agency_responsible", service_notice = "service_notice", zipcode = 111111, expected_datetime = date, requested_datetime = date, updated_datetime = date)
+        self.access_service_obj.add_requests_id(1)
+        self.assertEquals([{'status' : 'open', 'status_notes' : 'status_notes', 'service_name' : 'name', 'service_code' : '0', 'description' : 'description', 'agency_responsible' : 'agency_responsible', 'service_notice' : 'service_notice', 'requested_datetime' : str(date), 'updated_datetime' : str(date), 'expected_datetime' : str(date), 'address' : 'address_string', 'address_id' : '1',  'zipcode' : '111111', 'lat' : '0.1', 'long' : '0.1', 'media_url' : 'media_url'}], self.access_service_obj.getServiceRequests(None))
+
 def _db_cleanup():
     conn = sqlite3.connect(db_path)
     c = conn.cursor()

@@ -1,9 +1,10 @@
 # vim: ai ts=4 sts=4 et sw= encoding=utf-8
 
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, between
 from sqlalchemy.orm import sessionmaker
 from service_schema import Service, Keywords, Values, Attributes, DbBase, Requests, RequestsId, RequestsToken, RequestAttribue
 from flask import abort
+from datetime import datetime, timedelta
 
 class AccessService(object):
     def __init__(self, engine_uri):
@@ -66,7 +67,7 @@ class AccessService(object):
 	service_list = []
 	for row in session.query(Service.code, Service.name, Service.descn, Service.serv_metadata, Service.serv_type, Service.group).all():
             keyword_list = []
-            for row_ in session.query(Keywords.keyword).filter(Keywords.service_code==row.code):
+            for row_ in session.query(Keywords.keyword).filter(Keywords.service_code == row.code):
                 keyword_list.append(row_.keyword)
             keyword_string = ','.join(keyword_list) 
             service_list.append({'service_code':str(row.code), 'service_name':str(row.name), 'description':str(row.descn), 'metadata':str(row.serv_metadata), 'type':str(row.serv_type), 'keywords':str(keyword_string), 'group':str(row.group)})
@@ -129,14 +130,56 @@ class AccessService(object):
         else:
             return ({'service_notice':'Sample service notice', 'account_id':request_form['account_id']})
 
-        def postServiceRequests(self, args):
-            service_request_id = args.getlist['service_request_id']
-            service_code = args.get['service_code']
-            start_date = args.get['start_date']
-            end_date = args.get['end_date']
-            status = args.get['status']
-
-            session = self.Session()
-            request_list = []
+    def getServiceRequests(self, args):
+        try:
+            service_request_id_list = args.getlist['service_request_id']
+        except (TypeError, ValueError, AttributeError):
+            service_request_id_list = None
             
-            for row in session.query(RequestsId.requests_id)
+        try:
+            service_code_list = args.getlist['service_code']
+        except (TypeError, ValueError, AttributeError):
+            service_code_list = None
+            
+        try:
+            end_date = args.get['end_date']
+        except (TypeError, ValueError, AttributeError):
+            end_date = datetime.utcnow()
+            
+        try:
+            start_date = args.get['end_date']
+        except (TypeError, ValueError, AttributeError):
+                start_date = (end_date - timedelta(days = 90))
+            
+        try:
+            status_list = args.getlist['status']
+        except (TypeError, ValueError, AttributeError):
+            status_list = None
+
+        session = self.Session()
+        requests_list = []
+        request_id_list = []
+            
+        if(service_request_id_list is not None):
+            for row in session.query(RequestsId.requests_id).filter(Requests.service_request_id.in_(service_request_id_list)):
+                request_id_list.append(row.requests_id)
+            
+        else:
+            for row in session.query(RequestsId.requests_id):
+                request_id_list.append(row.requests_id)
+            
+        if(service_code_list is not None):
+            for row in session.query(Requests.id).filter(Requests.id.in_(request_id_list)).filter(Requests.service_code.in_(service_code_list)):
+                request_id_list.append(row.id)
+            
+        for row in session.query(Requests.id).filter(Requests.id.in_(request_id_list)).filter(between(Requests.requested_datetime, start_date, end_date)):
+            request_id_list.append(row.id)
+            
+        if(status_list is not None):
+            for row in  session.query(Requests.id).filter(Requests.id.in_(request_id_list)).filter(Requests.status.in_(status_list)):
+                request_id_list.append(row.id)
+
+        for row in session.query(Requests.status, Requests.status_notes, Service.name, Requests.service_code, Requests.description, Requests.agency_responsible, Requests.service_notice, Requests.requested_datetime, Requests.updated_datetime, Requests.expected_datetime, Requests.address_string, Requests.address_id, Requests.zipcode, Requests.lat, Requests.long, Requests.media_url).filter(Requests.id.in_(request_id_list)).join(Service, Requests.service_code == Service.code).limit(1000):
+            requests_list.append({'status' : str(row.status), 'status_notes' : str(row.status_notes), 'service_name' : str(row.name), 'service_code' : str(row.service_code), 'description' : str(row.description), 'agency_responsible' : str(row.agency_responsible), 'service_notice' : str(row.service_notice), 'requested_datetime' : str(row.requested_datetime), 'updated_datetime' : str(row.updated_datetime), 'expected_datetime' : str(row.expected_datetime), 'address' : str(row.address_string), 'address_id' : str(row.address_id), 'zipcode' : str(row.zipcode), 'lat' : str(row.lat), 'long' : str(row.long), 'media_url' : str(row.media_url)})
+
+        return requests_list

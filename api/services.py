@@ -68,11 +68,11 @@ class ServiceRequests(object):
         self.format = format
         self.formatter = _xml_formatter_req if format == 'xml' else _json_formatter_req
 
-    def get(self):
-        return " "
+    def get(self, args):
+        return self.formatter(args = args, type = 'get')
 
     def post(self, form):
-        return self.formatter(form = form)
+        return self.formatter(form = form, type = 'post')
 
     def content_type(self):
         return content_type_for(self.format)
@@ -80,22 +80,39 @@ class ServiceRequests(object):
 def _xml_formatter_req(*args, **kwargs):
     root = XML('service_requests')
     access_service_obj = AccessService(engine_config)
-    form = kwargs.pop('form')
-    if(form != None):
-        subroot = XML('request')
+    type = kwargs.pop('type')
+    subroot = XML('request')
+    
+    if(type == 'post'):
+        form = kwargs.pop('form')
         post_service_requests = access_service_obj.postServiceRequests(form)
         subroot.append_dict(post_service_requests)
-        root.append(subroot)
-        return repr(root)
+    else:
+        args = kwargs.pop('args')
+        get_service_requests = access_service_obj.getServiceRequests(args)
+        for request in get_service_requests:
+            subroot.append_dict(request)
+    
+    root.append(subroot)
+    return repr(root)
 
 def _json_formatter_req(*args, **kwargs):
     content = []
     access_service_obj = AccessService(engine_config)
-    form = kwargs.pop('form')
-    if(form != None):
+    type = kwargs.pop('type')
+    
+    if(type == 'post'):
+        form = kwargs.pop('form')
         post_service_requests = access_service_obj.postServiceRequests(form)
         content.append(post_service_requests)
-        return json.dumps(content)
+
+    else:
+        args = kwargs.pop('args')
+        get_service_requests = access_service_obj.getServiceRequests(args)
+        for request in get_service_requests:
+            content.append(request)
+        
+    return json.dumps(content)
 
 class MultipleServiceRequest(object):
 

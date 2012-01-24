@@ -31,7 +31,7 @@ def discovery(format='xml'):
 def service_requests(format='xml'):
     service_requests = ServiceRequests(format.lower())
     if request.method=='GET':
-        return response_from(service_requests.get(), service_requests.content_type())
+        return response_from(service_requests.get(request.args), service_requests.content_type())
     else:
         return response_from(service_requests.post(request.form), service_requests.content_type())
 
