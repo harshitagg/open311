@@ -1,9 +1,7 @@
 # vim: ai ts=4 sts=4 et sw= encoding=utf-8
 import json
-from utils import content_type_for
 from api.access_services import AccessService
 from utils import XML
-from lxml import etree
 
 engine_config = 'sqlite:///sample.db'
 
@@ -16,7 +14,7 @@ class ServiceList(object):
         return self.formatter()
 
     def content_type(self):
-        return content_type_for(self.format)
+        return _content_type_for(self.format)
 
 
 def _xml_formatter_list():
@@ -47,7 +45,7 @@ class ServiceDefinition(object):
         return self.formatter(self.service_code)
 
     def content_type(self):
-        return content_type_for(self.format)
+        return _content_type_for(self.format)
 
 
 def _xml_formatter_def(service_code):
@@ -76,7 +74,7 @@ class ServiceRequests(object):
         return self.formatter(form=form, type='post')
 
     def content_type(self):
-        return content_type_for(self.format)
+        return _content_type_for(self.format)
 
 
 def _xml_formatter_req(*args, **kwargs):
@@ -121,3 +119,7 @@ def _json_formatter_req(*args, **kwargs):
 class MultipleServiceRequest(object):
     def get(self):
         pass
+
+
+def _content_type_for(format):
+    return "text/xml; charset=utf-8" if format == 'xml' else "application/json; charset=utf-8"
