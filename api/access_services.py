@@ -263,3 +263,23 @@ class AccessService(object):
                      'long': str(row.long), 'media_url': str(row.media_url)}
 
         return request
+
+    def getRequestIdFromToken(self, token_id):
+        if token_id is None:
+            abort(400)
+
+        session = self.Session()
+        requests_id = None
+        for row in session.query(RequestsToken.requests_id).filter(RequestsToken.token == token_id):
+            requests_id = row.requests_id
+
+        if requests_id is None:
+            abort(404)
+
+        session.query(RequestsToken).filter(RequestsToken.token == token_id).delete()
+        session.commit()
+        self.add_requests_id(requests_id)
+        for row in session.query(RequestsId.service_request_id).filter(RequestsId.requests_id == requests_id):
+            service_request_id = row.service_request_id
+
+        return {'service_request_id' : str(service_request_id), 'token' : str(token_id)}

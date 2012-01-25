@@ -1,7 +1,7 @@
 from flask import Flask, request
 
 from api.discovery import ServiceDiscovery
-from api.services import ServiceList, ServiceDefinition, ServiceRequests, ServiceRequest
+from api.services import ServiceList, ServiceDefinition, ServiceRequests, ServiceRequest, RequestIdFromToken
 from webapp.add_service import show_add_serv_form, show_add_serv_def_form
 
 #configuration
@@ -34,6 +34,11 @@ def service_requests(format='xml'):
         return response_from(service_requests.get(request.args), service_requests.content_type())
     else:
         return response_from(service_requests.post(request.form), service_requests.content_type())
+
+@app.route("/tokens/<token_id>.<format>")
+def request_id(token_id , format='xml'):
+    request_id = RequestIdFromToken(token_id, format.lower())
+    return response_from(request_id.get(), request_id.content_type())
 
 @app.route("/requests/<service_request_id>.<format>")
 def service_request(service_request_id, format='xml'):

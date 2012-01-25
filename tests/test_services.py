@@ -152,7 +152,7 @@ class TestServiceRequest(unittest.TestCase):
         _db_cleanup()
 
     def test_service_request_xml(self):
-        response = self.app.get("requests/1.xml")
+        response = self.app.get("/requests/1.xml")
         self.assertEquals(200, response.status_code)
         
     def test_service_request_xml_content_type(self):
@@ -160,11 +160,55 @@ class TestServiceRequest(unittest.TestCase):
         self.assertEquals("text/xml; charset=utf-8", response.headers["Content-Type"])
 
     def test_service_request_json(self):
-        response = self.app.get("requests/1.json")
+        response = self.app.get("/requests/1.json")
         self.assertEquals(200, response.status_code)
 
     def test_service_request_json_content_type(self):
-        response = self.app.get("requests/1.json")
+        response = self.app.get("/requests/1.json")
+        self.assertEquals("application/json; charset=utf-8", response.headers["Content-Type"])
+
+
+class TestRequestIdFromToken(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.access_service_obj = AccessService(engine_config)
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.access_service_obj.drop_db()
+
+    def setUp(self):
+        main.app.config['TESTING'] = True
+        self.app = main.app.test_client()
+        self.access_service_obj.add_service(0, "name", "description", False, "", ["keyword1","keyword2"], "group")
+        date = datetime.utcnow()
+        self.access_service_obj.add_requests(lat = 0.1, long = 0.1, address_string =  "address_string", address_id  = 1,
+                                             email = "email", device_id = "device_id", account_id = "account_id", 
+                                             first_name = "first_name", last_name = "last_name", phone = 1234567890, 
+                                             description = "description", media_url = "media_url", service_code = 0,
+                                             status = "open", status_notes = "status_notes", 
+                                             agency_responsible = "agency_responsible", service_notice = "service_notice", 
+                                             zipcode = 111111, expected_datetime = date, requested_datetime = date, 
+                                             updated_datetime = date)
+        self.access_service_obj.add_requests_token(1)
+
+    def tearDown(self):
+        _db_cleanup()
+
+    def test__request_id_xml(self):
+        response = self.app.get("/tokens/1.xml")
+        self.assertEquals(200, response.status_code)
+        
+    def test_request_id_xml_content_type(self):
+        response = self.app.get("/tokens/1.xml")
+        self.assertEquals("text/xml; charset=utf-8", response.headers["Content-Type"])
+
+    def test_request_id_json(self):
+        response = self.app.get("/tokens/1.json")
+        self.assertEquals(200, response.status_code)
+
+    def test_request_id_json_content_type(self):
+        response = self.app.get("/tokens/1.json")
         self.assertEquals("application/json; charset=utf-8", response.headers["Content-Type"])
 
 

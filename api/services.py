@@ -141,3 +141,31 @@ def _json_formatter_req(service_request_id):
     access_service_obj = AccessService(engine_config)
     get_service_request = access_service_obj.getServiceRequest(service_request_id)
     return json.dumps(get_service_request)
+
+
+class RequestIdFromToken(object):
+    def __init__(self, token_id, format):
+        self.token_id = token_id
+        self.format = format
+        self.formatter = _xml_formatter_token if format == 'xml' else _json_formatter_token
+
+    def get(self):
+        return self.formatter(self.token_id)
+
+    def content_type(self):
+        return content_type_for(self.format)
+
+
+def _xml_formatter_token(token_id):
+    root = XML('service_requests')
+    access_service_obj = AccessService(engine_config)
+    subroot = XML('request')
+    get_request_id = access_service_obj.getRequestIdFromToken(token_id)
+    subroot.append_dict(get_request_id)
+    root.append(subroot)
+    return repr(root)
+
+def _json_formatter_token(token_id):
+    access_service_obj = AccessService(engine_config)
+    get_request_id = access_service_obj.getRequestIdFromToken(token_id)
+    return json.dumps(get_request_id)
