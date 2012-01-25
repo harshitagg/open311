@@ -197,7 +197,7 @@ class AccessService(object):
 
         if(service_request_id_list is not None):
             for row in session.query(RequestsId.requests_id).filter(
-                Requests.service_request_id.in_(service_request_id_list)):
+                RequestsId.service_request_id.in_(service_request_id_list)):
                 request_id_list.append(row.requests_id)
 
         else:
@@ -234,3 +234,32 @@ class AccessService(object):
                      'long': str(row.long), 'media_url': str(row.media_url)})
 
         return requests_list
+
+    def getServiceRequest(self, service_request_id):
+        if service_request_id is None:
+            abort(400)
+
+        session = self.Session()
+        request_id = None
+            
+        for row in session.query(RequestsId.requests_id).filter(RequestsId.service_request_id == service_request_id):
+            request_id = row.requests_id
+
+        if request_id is None:
+            abort(404)
+
+        for row in session.query(Requests.status, Requests.status_notes, Service.name, Requests.service_code,
+                                 Requests.description, Requests.agency_responsible, Requests.service_notice,
+                                 Requests.requested_datetime, Requests.updated_datetime, Requests.expected_datetime,
+                                 Requests.address_string, Requests.address_id, Requests.zipcode, Requests.lat,
+                                 Requests.long, Requests.media_url).filter(Requests.id == request_id).join(
+            Service, Requests.service_code == Service.code):
+            request = {'status': str(row.status), 'status_notes': str(row.status_notes), 'service_name': str(row.name),
+                     'service_code': str(row.service_code), 'description': str(row.description),
+                     'agency_responsible': str(row.agency_responsible), 'service_notice': str(row.service_notice),
+                     'requested_datetime': str(row.requested_datetime), 'updated_datetime': str(row.updated_datetime),
+                     'expected_datetime': str(row.expected_datetime), 'address': str(row.address_string),
+                     'address_id': str(row.address_id), 'zipcode': str(row.zipcode), 'lat': str(row.lat),
+                     'long': str(row.long), 'media_url': str(row.media_url)}
+
+        return request

@@ -65,7 +65,7 @@ def _json_formatter_def(service_code):
 class ServiceRequests(object):
     def __init__(self, format):
         self.format = format
-        self.formatter = _xml_formatter_req if format == 'xml' else _json_formatter_req
+        self.formatter = _xml_formatter_reqs if format == 'xml' else _json_formatter_reqs
 
     def get(self, args):
         return self.formatter(args=args, type='get')
@@ -77,7 +77,7 @@ class ServiceRequests(object):
         return content_type_for(self.format)
 
 
-def _xml_formatter_req(*args, **kwargs):
+def _xml_formatter_reqs(*args, **kwargs):
     root = XML('service_requests')
     access_service_obj = AccessService(engine_config)
     type = kwargs.pop('type')
@@ -97,7 +97,7 @@ def _xml_formatter_req(*args, **kwargs):
     return repr(root)
 
 
-def _json_formatter_req(*args, **kwargs):
+def _json_formatter_reqs(*args, **kwargs):
     content = []
     access_service_obj = AccessService(engine_config)
     type = kwargs.pop('type')
@@ -116,6 +116,28 @@ def _json_formatter_req(*args, **kwargs):
     return json.dumps(content)
 
 
-class MultipleServiceRequest(object):
+class ServiceRequest(object):
+    def __init__(self, service_request_id, format):
+        self.service_request_id = service_request_id
+        self.format = format
+        self.formatter = _xml_formatter_req if format == 'xml' else _json_formatter_req
+
     def get(self):
-        pass
+        return self.formatter(self.service_request_id)
+
+    def content_type(self):
+        return content_type_for(self.format)
+
+def _xml_formatter_req(service_request_id):
+    root = XML('service_requests')
+    access_service_obj = AccessService(engine_config)
+    subroot = XML('request')
+    get_service_request = access_service_obj.getServiceRequest(service_request_id)
+    subroot.append_dict(get_service_request)
+    root.append(subroot)
+    return repr(root)
+
+def _json_formatter_req(service_request_id):
+    access_service_obj = AccessService(engine_config)
+    get_service_request = access_service_obj.getServiceRequest(service_request_id)
+    return json.dumps(get_service_request)
