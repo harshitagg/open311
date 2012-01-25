@@ -96,6 +96,9 @@ class AccessService(object):
         return service_list
 
     def getServiceDefinition(self, service_code):
+        if service_code is None:
+            abort(400)
+
         session = self.Session()
         value_list = []
         for row in session.query(Values.key, Values.name).filter(service_code == Values.service_code):
@@ -107,7 +110,7 @@ class AccessService(object):
                 'attribute': {'variable': str(attr.variable), 'code': str(attr.code), 'datatype': str(attr.datatype),
                               'required': str(attr.required), 'datatype_description': str(attr.datatype_description),
                               'order': str(attr.order), 'description': str(attr.description), 'values': value_list}}})
-        return []
+        abort(404)
 
     def postServiceRequests(self, request_form):
         print request_form
