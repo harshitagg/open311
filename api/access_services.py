@@ -96,6 +96,9 @@ class AccessService(object):
         return service_list
 
     def getServiceDefinition(self, service_code):
+        if service_code is None:
+            abort(400)
+
         session = self.Session()
         value_list = []
         for row in session.query(Values.key, Values.name).filter(service_code == Values.service_code):
@@ -107,7 +110,7 @@ class AccessService(object):
                 'attribute': {'variable': str(attr.variable), 'code': str(attr.code), 'datatype': str(attr.datatype),
                               'required': str(attr.required), 'datatype_description': str(attr.datatype_description),
                               'order': str(attr.order), 'description': str(attr.description), 'values': value_list}}})
-        return []
+        abort(404)
 
     def postServiceRequests(self, request_form):
         print request_form
@@ -197,7 +200,7 @@ class AccessService(object):
 
         if(service_request_id_list is not None):
             for row in session.query(RequestsId.requests_id).filter(
-                Requests.service_request_id.in_(service_request_id_list)):
+                RequestsId.service_request_id.in_(service_request_id_list)):
                 request_id_list.append(row.requests_id)
 
         else:
@@ -234,3 +237,52 @@ class AccessService(object):
                      'long': str(row.long), 'media_url': str(row.media_url)})
 
         return requests_list
+
+    def getServiceRequest(self, service_request_id):
+        if service_request_id is None:
+            abort(400)
+
+        session = self.Session()
+        request_id = None
+            
+        for row in session.query(RequestsId.requests_id).filter(RequestsId.service_request_id == service_request_id):
+            request_id = row.requests_id
+
+        if request_id is None:
+            abort(404)
+
+        for row in session.query(Requests.status, Requests.status_notes, Service.name, Requests.service_code,
+                                 Requests.description, Requests.agency_responsible, Requests.service_notice,
+                                 Requests.requested_datetime, Requests.updated_datetime, Requests.expected_datetime,
+                                 Requests.address_string, Requests.address_id, Requests.zipcode, Requests.lat,
+                                 Requests.long, Requests.media_url).filter(Requests.id == request_id).join(
+            Service, Requests.service_code == Service.code):
+            request = {'status': str(row.status), 'status_notes': str(row.status_notes), 'service_name': str(row.name),
+                     'service_code': str(row.service_code), 'description': str(row.description),
+                     'agency_responsible': str(row.agency_responsible), 'service_notice': str(row.service_notice),
+                     'requested_datetime': str(row.requested_datetime), 'updated_datetime': str(row.updated_datetime),
+                     'expected_datetime': str(row.expected_datetime), 'address': str(row.address_string),
+                     'address_id': str(row.address_id), 'zipcode': str(row.zipcode), 'lat': str(row.lat),
+                     'long': str(row.long), 'media_url': str(row.media_url)}
+
+        return request
+
+    def getRequestIdFromToken(self, token_id):
+        if token_id is None:
+            abort(400)
+
+        session = self.Session()
+        requests_id = None
+        for row in session.query(RequestsToken.requests_id).filter(RequestsToken.token == token_id):
+            requests_id = row.requests_id
+
+        if requests_id is None:
+            abort(404)
+
+        session.query(RequestsToken).filter(RequestsToken.token == token_id).delete()
+        session.commit()
+        self.add_requests_id(requests_id)
+        for row in session.query(RequestsId.service_request_id).filter(RequestsId.requests_id == requests_id):
+            service_request_id = row.service_request_id
+
+        return {'service_request_id' : str(service_request_id), 'token' : str(token_id)}
