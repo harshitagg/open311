@@ -3,7 +3,7 @@ import json
 from api.access_services import AccessService
 from utils import XML
 
-engine_config = 'sqlite:///sample.db'
+engine_config = 'postgres://ljvugfcawp:WRGLQaxiEwMoM2fTF-pZ@ec2-50-17-204-215.compute-1.amazonaws.com/ljvugfcawp'
 
 class ServiceList(object):
     def __init__(self, format):
