@@ -28,18 +28,6 @@ class Keywords(Base):
     UniqueConstraint('service_code', 'keyword', name='checkkeywords')
 
 
-class Values(Base):
-    __tablename__ = 'values'
-
-    id = Column(Integer, primary_key=True)
-    key = Column(Integer, nullable=False)
-    name = Column(String, nullable=False)
-    attribute_code = Column(String, ForeignKey('attribute.code'), nullable=False)
-    service_code = Column(Integer, ForeignKey('service.code'), nullable=False)
-
-    UniqueConstraint('key', 'attribute_code', 'service_code', name='checkvalues')
-
-
 class Attributes(Base):
     __tablename__ = 'attribute'
 
@@ -54,6 +42,18 @@ class Attributes(Base):
     service_code = Column(Integer, ForeignKey('service.code'), nullable=False)
 
    UniqueConstraint('code', 'service_code', name='checkattributes')
+
+
+class Values(Base):
+    __tablename__ = 'values'
+
+    id = Column(Integer, primary_key=True)
+    key = Column(Integer, nullable=False)
+    name = Column(String, nullable=False)
+    attribute_code = Column(String, ForeignKey('attribute.code'), nullable=False)
+    service_code = Column(Integer, ForeignKey('service.code'), nullable=False)
+
+    UniqueConstraint('key', 'attribute_code', 'service_code', name='checkvalues')
 
 
 class Requests(Base):
