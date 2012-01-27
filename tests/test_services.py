@@ -33,27 +33,37 @@ class TestServiceList(unittest.TestCase):
 
 
 class TestServiceDefinition(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.access_service_obj = AccessService(engine_config)
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.access_service_obj.drop_db()
+
     def setUp(self):
         main.app.config['TESTING'] = True
         self.app = main.app.test_client()
+        self.access_service_obj.add_service(0, "name", "description", True, "service type", ["keyword1","keyword2"], "group")
+        self.access_service_obj.add_service_attribute(True, "code", "datatype", True, "datatype_description", 1, "description", 0)
 
     def tearDown(self):
-        pass
+        _db_cleanup()
 
     def test_services_def_xml(self):
-        response = self.app.get("/services/001.xml")
+        response = self.app.get("/services/0.xml")
         self.assertEquals(200, response.status_code)
 
     def test_service_def_xml_content_type(self):
-        response = self.app.get("/services/001.xml")
+        response = self.app.get("/services/0.xml")
         self.assertEquals('text/xml; charset=utf-8', response.headers["Content-Type"])
 
     def test_service_def_json(self):
-        response = self.app.get("/services/001.json")
+        response = self.app.get("/services/0.json")
         self.assertEquals(200, response.status_code)
 
     def test_service_def_json_content_type(self):
-        response = self.app.get("/services/001.json")
+        response = self.app.get("/services/0.json")
         self.assertEquals("application/json; charset=utf-8", response.headers["Content-Type"])
 
 
