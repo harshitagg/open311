@@ -37,7 +37,7 @@ class Values(Base):
     attribute_code = Column(String, ForeignKey('attribute.code'), nullable=False)
     service_code = Column(Integer, ForeignKey('service.code'), nullable=False)
 
-#    UniqueConstraint('key', 'attribute_code', 'service_code', name='checkvalues')
+    UniqueConstraint('key', 'attribute_code', 'service_code', name='checkvalues')
 
 
 class Attributes(Base):
@@ -45,7 +45,7 @@ class Attributes(Base):
 
     id = Column(Integer, primary_key=True)
     variable = Column(Boolean, nullable=False)
-    code = Column(String, nullable=False)
+    code = Column(String, nullable=False, unique= True)
     datatype = Column(String, nullable=False)
     required = Column(Boolean, nullable=False)
     datatype_description = Column(String)
@@ -53,7 +53,7 @@ class Attributes(Base):
     description = Column(String, nullable=False)
     service_code = Column(Integer, ForeignKey('service.code'), nullable=False)
 
-    UniqueConstraint('code', 'service_code', name='checkattributes')
+#   UniqueConstraint('code', 'service_code', name='checkattributes')
 
 
 class Requests(Base):
