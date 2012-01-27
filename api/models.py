@@ -16,4 +16,14 @@ class Service(Document):
     keywords = ListField(StringField)
     group = StringField(required=False)
     attributes = ListField(EmbeddedDocumentField(ServiceAttribute))
-    
+
+
+    def service_list_info(self):
+        _keywords = ",".join(self.keywords)
+        return {'service_code': self.code,
+                'service_name': self.name,
+                'description': self.definition,
+                'metadata': self.metadata,
+                'type': self.type,
+                'keywords': _keywords,
+                'group': self.group}

@@ -1,7 +1,9 @@
-from utils import content_type_for# vim: ai ts=4 sts=4 et sw= encoding=utf-8
+# vim: ai ts=4 sts=4 et sw= encoding=utf-8
 import json
-from api.access_services import AccessService
-from utils import XML
+
+from open311.utils import content_type_for
+from open311.utils import XML
+from models import Service
 
 class ServiceList(object):
     def __init__(self, format):
@@ -9,6 +11,10 @@ class ServiceList(object):
         self.format = format
 
     def get(self):
+        services = Service.objects
+        _services = []
+        for service in services:
+            _services.append({'service': service.service_list_info()})
         return self.formatter()
 
     def content_type(self):
