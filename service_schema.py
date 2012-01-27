@@ -41,7 +41,7 @@ class Attributes(Base):
     description = Column(String, nullable=False)
     service_code = Column(Integer, ForeignKey('service.code'), nullable=False)
 
-   UniqueConstraint('code', 'service_code', name='checkattributes')
+    UniqueConstraint('code', 'service_code', name='checkattributes')
 
 
 class Values(Base):
