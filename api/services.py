@@ -3,8 +3,6 @@ import json
 from api.access_services import AccessService
 from utils import XML
 
-engine_config = 'sqlite:///sample.db'
-
 class ServiceList(object):
     def __init__(self, format):
         self.formatter = _xml_formatter_list if format == 'xml' else _json_formatter_list
