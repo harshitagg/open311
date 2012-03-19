@@ -1,7 +1,6 @@
 import json
 
 import yaml
-from lxml import etree
 
 from utils import XML
 from settings import SERVICE_DISCOVERY_FILE

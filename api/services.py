@@ -84,7 +84,7 @@ def _xml_formatter_reqs(*args, **kwargs):
     type = kwargs.pop('type')
     subroot = XML('request')
 
-    if(type == 'post'):
+    if type == 'post':
         form = kwargs.pop('form')
         post_service_requests = access_service_obj.postServiceRequests(form)
         subroot.append_dict(post_service_requests)
@@ -103,7 +103,7 @@ def _json_formatter_reqs(*args, **kwargs):
     access_service_obj = AccessService(engine_config)
     type = kwargs.pop('type')
 
-    if(type == 'post'):
+    if type == 'post':
         form = kwargs.pop('form')
         post_service_requests = access_service_obj.postServiceRequests(form)
         content.append(post_service_requests)
@@ -129,6 +129,7 @@ class ServiceRequest(object):
     def content_type(self):
         return content_type_for(self.format)
 
+
 def _xml_formatter_req(service_request_id):
     root = XML('service_requests')
     access_service_obj = AccessService(engine_config)
@@ -137,6 +138,7 @@ def _xml_formatter_req(service_request_id):
     subroot.append_dict(get_service_request)
     root.append(subroot)
     return repr(root)
+
 
 def _json_formatter_req(service_request_id):
     access_service_obj = AccessService(engine_config)
@@ -165,6 +167,7 @@ def _xml_formatter_token(token_id):
     subroot.append_dict(get_request_id)
     root.append(subroot)
     return repr(root)
+
 
 def _json_formatter_token(token_id):
     access_service_obj = AccessService(engine_config)
