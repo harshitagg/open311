@@ -1,10 +1,14 @@
-from utils import content_type_for# vim: ai ts=4 sts=4 et sw= encoding=utf-8
+from utils import content_type_for
 import json
 from api.access_services import AccessService
 from utils import XML
 
+
 #engine_config = 'postgres://ljvugfcawp:WRGLQaxiEwMoM2fTF-pZ@ec2-50-17-204-215.compute-1.amazonaws.com/ljvugfcawp'
-engine_config = 'sqlite:///sample.db'
+#engine_config = 'sqlite:///sample.db'
+#engine_config = 'mysql://root@localhost/open311'
+engine_config = 'mysql://harshit:12345678@10.10.5.68/open311'
+
 
 class ServiceList(object):
     def __init__(self, format):

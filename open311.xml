@@ -1,0 +1,8 @@
+<uwsgi>
+    <socket>127.0.0.1:3031</socket>
+    <file>main.py</file>
+    <pythonpath>../ve311/lib/python2.7/site-packages/</pythonpath>
+    <callable>app</callable>
+    <processes>2</processes>
+    <protocol>http</protocol>
+</uwsgi>

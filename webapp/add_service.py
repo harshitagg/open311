@@ -2,7 +2,9 @@ from flask import Flask, render_template, request, flash, redirect, url_for
 from api.access_services import AccessService
 
 #app = Flask(__name__)
-engine_config = 'sqlite:///sample.db'
+#engine_config = 'sqlite:///sample.db'
+#engine_config = 'mysql://root@localhost/open311'
+engine_config = 'mysql://harshit:12345678@10.10.5.68/open311'
 
 def show_add_serv_form():
     if request.method == 'POST':
@@ -11,9 +13,9 @@ def show_add_serv_form():
         keywords = request.form['keywords'].split(",")
         metadata = str(request.form['metadata'])
         access_service_obj.add_service(request.form['code'], request.form['name'], request.form['description'],
-                                       _str2bool(metadata), request.form['type'], keywords, request.form['group'])
+            _str2bool(metadata), request.form['type'], keywords, request.form['group'])
         flash('Submission Successful')
-        return redirect('http://127.0.0.1:5000/add_service') #should be replaced with url_for
+        return redirect('http://localhost:3031/add_service') #should be replaced with url_for
     else:
         return render_template('add_service.html')
 
