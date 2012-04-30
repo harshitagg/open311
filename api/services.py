@@ -1,3 +1,4 @@
+from repr import repr
 from utils import content_type_for
 import json
 from api.access_services import AccessService
@@ -6,8 +7,7 @@ from utils import XML
 
 #engine_config = 'postgres://ljvugfcawp:WRGLQaxiEwMoM2fTF-pZ@ec2-50-17-204-215.compute-1.amazonaws.com/ljvugfcawp'
 #engine_config = 'sqlite:///sample.db'
-#engine_config = 'mysql://root@localhost/open311'
-engine_config = 'mysql://harshit:12345678@10.10.5.68/open311'
+engine_config = 'mysql://root:password@localhost/open311'
 
 
 class ServiceList(object):
@@ -111,6 +111,7 @@ def _json_formatter_reqs(*args, **kwargs):
         form = kwargs.pop('form')
         post_service_requests = access_service_obj.postServiceRequests(form)
         content.append(post_service_requests)
+        print content
 
     else:
         args = kwargs.pop('args')

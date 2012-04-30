@@ -1,10 +1,10 @@
-from flask import Flask, render_template, request, flash, redirect, url_for
+from flask import  render_template, request, flash, redirect
 from api.access_services import AccessService
 
 #app = Flask(__name__)
 #engine_config = 'sqlite:///sample.db'
 #engine_config = 'mysql://root@localhost/open311'
-engine_config = 'mysql://harshit:12345678@10.10.5.68/open311'
+engine_config = 'mysql://root:password@localhost/open311'
 
 def show_add_serv_form():
     if request.method == 'POST':

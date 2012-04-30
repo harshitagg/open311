@@ -89,7 +89,6 @@ class TestServiceRequests(unittest.TestCase):
             'first_name': 'first_name',
             'last_name': 'last_name',
             'phone': 1234567890,
-            'description': 'description',
             'device_id': 'device_id',
             'account_id': 'account_id',
             'description': 'description',

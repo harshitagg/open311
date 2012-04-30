@@ -1,8 +1,7 @@
 # vim: ai ts=4 sts=4 et sw= encoding=utf-8
 
-from sqlalchemy import Column, String, Integer, Boolean, ForeignKey, UniqueConstraint, Float, BigInteger, CheckConstraint, DateTime, Text, Index
+from sqlalchemy import Column, String, Integer, Boolean, ForeignKey, UniqueConstraint, Float, BigInteger, CheckConstraint, DateTime, Text
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import relationship, backref
 
 Base = declarative_base()
 

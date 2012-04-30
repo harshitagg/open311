@@ -3,7 +3,6 @@ import unittest
 import main
 
 class TestServiceDiscovery(unittest.TestCase):
-
     def setUp(self):
         main.app.config['TESTING'] = True
         self.app = main.app.test_client()

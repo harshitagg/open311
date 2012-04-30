@@ -9,14 +9,14 @@ class AccessService(object):
         engine = create_engine(engine_uri, echo=True)
         self.db_base = DbBase(engine)
         self.db_base.create()
-        self.Session = sessionmaker()
-        self.Session.configure(bind=engine)
+        self.Session = sessionmaker(bind=engine)
+        self.session = self.Session()
 
     def drop_db(self):
         self.db_base.drop()
 
     def add_service(self, code, name, descn, serv_metadata, serv_type, keywords, group):
-        session = self.Session()
+        session = self.session
         new_service = Service(code=code, name=name, descn=descn, serv_metadata=serv_metadata, serv_type=serv_type,
             group=group)
         session.add(new_service)
@@ -27,21 +27,20 @@ class AccessService(object):
 
     def add_service_attribute(self, variable, code, datatype, required, datatype_description, order, description,
                               service_code):
-        session = self.Session()
+        session = self.session
         new_attribute = Attributes(variable=variable, code=code, datatype=datatype, required=required,
-            datatype_description=datatype_description, order=order, description=description,
-            service_code=service_code)
+            datatype_description=datatype_description, order=order, description=description, service_code=service_code)
         session.add(new_attribute)
         session.commit()
 
     def add_service_value(self, service_code, key, name, attribute_code):
-        session = self.Session()
+        session = self.session
         new_value = Values(service_code=service_code, key=key, name=name, attribute_code=attribute_code)
         session.add(new_value)
         session.commit()
 
     def add_requests(self, *args, **kwargs):
-        session = self.Session()
+        session = self.session
         new_request = Requests(lat=kwargs.pop('lat', None), long=kwargs.pop('long', None),
             address_string=kwargs.pop('address_string', None),
             address_id=kwargs.pop('address_id', None), email=kwargs.pop('email', None),
@@ -61,25 +60,25 @@ class AccessService(object):
         session.commit()
 
     def add_requests_id(self, requests_id):
-        session = self.Session()
+        session = self.session
         new_request_id = RequestsId(requests_id=requests_id)
         session.add(new_request_id)
         session.commit()
 
     def add_requests_token(self, requests_id):
-        session = self.Session()
+        session = self.session
         new_request_token = RequestsToken(requests_id=requests_id)
         session.add(new_request_token)
         session.commit()
 
     def add_requests_attribute(self, requests_id, attribute_code, value):
-        session = self.Session()
+        session = self.session
         new_request_attribute = RequestAttribue(requests_id=requests_id, attribute_code=attribute_code, value=value)
         session.add(new_request_attribute)
         session.commit()
 
     def getServiceList(self):
-        session = self.Session()
+        session = self.session
         service_list = []
         for row in session.query(Service.code, Service.name, Service.descn, Service.serv_metadata, Service.serv_type,
             Service.group).all():
@@ -97,7 +96,7 @@ class AccessService(object):
         if service_code is None:
             abort(400)
 
-        session = self.Session()
+        session = self.session
         value_list = []
         for row in session.query(Values.key, Values.name).filter(service_code == Values.service_code):
             value_list.append({'value': {'key': str(row.key), 'name': str(row.name)}})
@@ -111,13 +110,14 @@ class AccessService(object):
         abort(404)
 
     def postServiceRequests(self, request_form):
+        global serv_type, attributes
         print request_form
         service_code = request_form['service_code']
         print service_code
         if service_code is None:
             abort(400)
 
-        session = self.Session()
+        session = self.session
         serv_metadata = False
         service_found = False
         for row in session.query(Service.serv_type, Service.serv_metadata).filter(service_code == Service.code):
@@ -125,6 +125,8 @@ class AccessService(object):
             serv_metadata = row.serv_metadata
             service_found = True
 
+        print service_found
+        print serv_metadata
         if not service_found:
             abort(404)
 
@@ -133,15 +135,50 @@ class AccessService(object):
             if attributes is None:
                 abort(400)
 
+        if 'media_url' in request_form:
+            media_url = request_form['media_url']
+        else:
+            media_url = None
+
+        if 'address_id' in request_form:
+            address_id = request_form['address_id']
+        else:
+            address_id = None
+
+        if 'account_id' in request_form:
+            account_id = request_form['account_id']
+        else:
+            account_id = None
+
+        if 'first_name' in request_form:
+            first_name = request_form['first_name']
+        else:
+            first_name = None
+
+        if 'last_name' in request_form:
+            last_name = request_form['last_name']
+        else:
+            last_name = None
+
+        if 'email' in request_form:
+            email = request_form['email']
+        else:
+            email = None
+
+        if 'phone' in request_form:
+            phone = request_form['phone']
+        else:
+            phone = None
+
         self.add_requests(lat=request_form['lat'], long=request_form['long'],
-            address_string=request_form['address_string'], address_id=request_form['address_id'],
-            email=request_form['email'], device_id=request_form['device_id'],
-            account_id=request_form['account_id'], first_name=request_form['first_name'],
-            last_name=request_form['last_name'], phone=request_form['phone'],
-            description=request_form['description'], media_url=request_form['media_url'],
+            address_string=request_form['address_string'], address_id=address_id,
+            email=email, device_id=request_form['device_id'],
+            account_id=account_id, first_name=first_name,
+            last_name=last_name, phone=phone,
+            description=request_form['description'], media_url=media_url,
             service_code=service_code, status='open')
 
-        for row in session.query(Requests.id).filter(service_code == Requests.service_code):
+        for row in session.query(Requests.id).filter(Requests.service_code == service_code):
             id = row.id
 
         if serv_metadata:
@@ -151,10 +188,10 @@ class AccessService(object):
 
         if serv_type.lower() == "realtime":
             self.add_requests_id(requests_id=id)
-            for row in session.query(RequestsId.service_request_id).filter(id == RequestsId.requests_id):
+            for row in session.query(RequestsId.service_request_id).filter(RequestsId.requests_id == id):
                 service_request_id = row.service_request_id
             return ({'service_request_id': str(service_request_id), 'service_notice': 'Sample service notice',
-                     'account_id': str(request_form['account_id'])})
+                     'account_id': str(account_id)})
 
         elif serv_type.lower() == "batch":
             self.add_requests_token(requests_id=id)
