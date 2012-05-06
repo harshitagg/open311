@@ -1,5 +1,5 @@
 from flask import Flask, request
-
+import os
 from api.discovery import ServiceDiscovery
 from api.services import ServiceList, ServiceDefinition, ServiceRequests, ServiceRequest, RequestIdFromToken
 from webapp.add_service import show_add_serv_form, show_add_serv_def_form
@@ -59,4 +59,5 @@ def response_from(body, content_type):
     return response
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host='0.0.0.0', port=port, debug=True)
